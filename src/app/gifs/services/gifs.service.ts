@@ -1,11 +1,13 @@
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Injectable } from '@angular/core';
+import { Gif, SearchResponse } from '../interfaces/gifs.interfaces';
 
 const GIPHY_API_KEY = '28XLVfWA8Hhh6b8nL2D3X0F2B7e1tJjF';
 
 @Injectable({providedIn: 'root'})
 export class GifsService {
 
+  public gifList: Gif[]=[];
   private _tagsHistory:string[]=[];
 
   private apiKey:string = GIPHY_API_KEY;
@@ -20,10 +22,13 @@ export class GifsService {
   private organizeHistory(tag:string){
     tag = tag.toLowerCase();
     if(this._tagsHistory.includes(tag)){
-      this._tagsHistory = this._tagsHistory.filter((oldtag) => oldtag !== tag)
+      this._tagsHistory = this._tagsHistory
+        .filter((oldtag) => oldtag !== tag)
     }
-    this._tagsHistory.unshift(tag);
-    this._tagsHistory = this._tagsHistory.splice(0,10);
+    this._tagsHistory
+      .unshift(tag);
+    this._tagsHistory = this._tagsHistory
+      .splice(0,10);
   }
 
 
@@ -35,7 +40,11 @@ export class GifsService {
       .set('limit', '10')
       .set('q', tag);
 
-    this.http.get(`${this.serviceUrl}/search`,{params}).subscribe(resp=> {console.log(resp)});
+    this.http.get<SearchResponse>(`${this.serviceUrl}/search`,{params})
+      .subscribe(resp=> {
+        this.gifList = resp.data;
+        //console.log({gifs: this.gifList});
+      });
     //fetch('https://api.giphy.com/v1/gifs/search?api_key=28XLVfWA8Hhh6b8nL2D3X0F2B7e1tJjF&q=valorant&limit=10').then(resp=> resp.json()).then(data=> console.log(data));
     //this._tagsHistory.unshift(tag);
 
