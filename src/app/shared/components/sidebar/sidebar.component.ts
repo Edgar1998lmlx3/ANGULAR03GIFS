@@ -10,11 +10,11 @@ export class SidebarComponent {
   //constructor(private GifsService: GifsService) { }
   constructor(private GifsService: GifsService){}
 
-  get tags(){
+  get tags():string[]{
     return this.GifsService.tagsHistory;
   }
 
-  searchTag(Tag:string){
+  searchTag(Tag:string):void{
     this.GifsService.searchTag(Tag);
   }
 
